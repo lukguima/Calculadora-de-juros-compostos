@@ -1,4 +1,4 @@
-import { CalculationParams, CalculationResult, ChartDataPoint, TableDataPoint } from './types';
+import { CalculationParams, CalculationResult, ChartDataPoint, TableDataPoint, MonthlyContributionGoalParams, PeriodGoalParams } from '../types';
 
 export const calculateCompoundInterest = (params: CalculationParams): CalculationResult => {
   const { initialInvestment, monthlyContribution, annualRate, periodYears } = params;
@@ -20,8 +20,11 @@ export const calculateCompoundInterest = (params: CalculationParams): Calculatio
     };
     return result;
   }
+  
+  // Use Math.round on totalMonths for the loop to handle float periodYears
+  const roundedTotalMonths = Math.round(totalMonths);
 
-  for (let month = 1; month <= totalMonths; month++) {
+  for (let month = 1; month <= roundedTotalMonths; month++) {
     currentBalance *= (1 + monthlyRate);
     currentBalance += monthlyContribution;
     
@@ -46,9 +49,9 @@ export const calculateCompoundInterest = (params: CalculationParams): Calculatio
     }
   }
 
-  if (totalMonths % 12 !== 0) {
+  if (roundedTotalMonths % 12 !== 0) {
       const year = periodYears;
-      const totalInvested = initialInvestment + (monthlyContribution * totalMonths);
+      const totalInvested = initialInvestment + (monthlyContribution * roundedTotalMonths);
       const totalInterest = currentBalance - totalInvested;
        chartData.push({
         year: parseFloat(year.toFixed(2)),
@@ -59,7 +62,7 @@ export const calculateCompoundInterest = (params: CalculationParams): Calculatio
   }
 
   const finalAmount = currentBalance;
-  const totalInvested = initialInvestment + monthlyContribution * totalMonths;
+  const totalInvested = initialInvestment + (monthlyContribution * roundedTotalMonths);
   const totalInterest = finalAmount - totalInvested;
 
   return {
@@ -69,4 +72,57 @@ export const calculateCompoundInterest = (params: CalculationParams): Calculatio
     chartData: chartData,
     tableData: tableData,
   };
+};
+
+export const calculateMonthlyContributionForGoal = (params: MonthlyContributionGoalParams): number | null => {
+  const { initialInvestment, annualRate, periodYears, goal } = params;
+
+  if (periodYears <= 0 || goal <= initialInvestment) return 0;
+
+  const monthlyRate = annualRate / 100 / 12;
+  const totalMonths = periodYears * 12;
+
+  if (monthlyRate === 0) {
+    const requiredTotalContribution = goal - initialInvestment;
+    return requiredTotalContribution / totalMonths;
+  }
+  
+  const futureValueOfPV = initialInvestment * Math.pow(1 + monthlyRate, totalMonths);
+
+  if (goal < futureValueOfPV) return 0;
+
+  const numerator = goal - futureValueOfPV;
+  const denominator = (Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate;
+
+  if (denominator === 0) return null;
+
+  return numerator / denominator;
+};
+
+export const calculatePeriodForGoal = (params: PeriodGoalParams): number | null => {
+  const { initialInvestment, annualRate, monthlyContribution, goal } = params;
+  
+  if (goal <= initialInvestment) return 0;
+
+  const monthlyRate = annualRate / 100 / 12;
+
+  if (monthlyRate === 0) {
+      if (monthlyContribution <= 0) return null;
+      const requiredMonths = (goal - initialInvestment) / monthlyContribution;
+      return requiredMonths;
+  }
+
+  const logNumerator = goal * monthlyRate + monthlyContribution;
+  const logDenominator = initialInvestment * monthlyRate + monthlyContribution;
+  
+  if (logNumerator <= 0 || logDenominator <= 0 || logNumerator < logDenominator) {
+    return null;
+  }
+
+  const numerator = Math.log(logNumerator / logDenominator);
+  const denominator = Math.log(1 + monthlyRate);
+
+  if (denominator === 0) return null;
+
+  return numerator / denominator;
 };

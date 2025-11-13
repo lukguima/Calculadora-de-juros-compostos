@@ -1,3 +1,9 @@
+// Fix: Add and export the ExtraContribution interface.
+export interface ExtraContribution {
+  month: number;
+  amount: number;
+}
+
 export interface CalculationParams {
   initialInvestment: number;
   monthlyContribution: number;
@@ -25,4 +31,18 @@ export interface CalculationResult {
   totalInterest: number;
   chartData: ChartDataPoint[];
   tableData: TableDataPoint[];
+}
+
+export interface GoalParams {
+  initialInvestment: number;
+  annualRate: number;
+  goal: number;
+}
+
+export interface MonthlyContributionGoalParams extends GoalParams {
+  periodYears: number;
+}
+
+export interface PeriodGoalParams extends GoalParams {
+  monthlyContribution: number;
 }

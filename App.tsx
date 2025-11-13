@@ -32,22 +32,26 @@ const App: React.FC = () => {
             Calculadora de Juros Compostos
           </h1>
           <p className="mt-2 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Descubra o poder dos juros compostos e visualize o crescimento do seu patrimônio ao longo do tempo.
+            Descubra o poder dos juros compostos, defina seus objetivos e planeje seus aportes para alcançar a independência financeira.
           </p>
         </header>
 
-        <div className="max-w-4xl mx-auto">
-          <CalculatorForm
-            initialInvestment={initialInvestment}
-            setInitialInvestment={setInitialInvestment}
-            monthlyContribution={monthlyContribution}
-            setMonthlyContribution={setMonthlyContribution}
-            annualRate={annualRate}
-            setAnnualRate={setAnnualRate}
-            periodYears={periodYears}
-            setPeriodYears={setPeriodYears}
-          />
-          <ResultsDisplay result={result} />
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="lg:col-span-2">
+            <CalculatorForm
+              initialInvestment={initialInvestment}
+              setInitialInvestment={setInitialInvestment}
+              monthlyContribution={monthlyContribution}
+              setMonthlyContribution={setMonthlyContribution}
+              annualRate={annualRate}
+              setAnnualRate={setAnnualRate}
+              periodYears={periodYears}
+              setPeriodYears={setPeriodYears}
+            />
+          </div>
+          <div className="lg:col-span-3">
+             <ResultsDisplay result={result} />
+          </div>
         </div>
         
         <footer className="text-center mt-12 text-gray-500 dark:text-gray-400">

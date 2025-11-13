@@ -40,9 +40,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
   if (!result || result.finalAmount === 0 && result.totalInvested === 0) {
     return (
-      <div className="mt-8 bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 text-center">
+      <div className="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 text-center">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Aguardando simulação...</h3>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">Preencha os campos acima para ver a mágica dos juros compostos.</p>
+        <p className="text-gray-500 dark:text-gray-400 mt-2">Preencha os campos e adicione seus aportes para ver a mágica dos juros compostos.</p>
       </div>
     );
   }
@@ -51,8 +51,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 
   return (
-    <div className="mt-8 bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+    <div className="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Resultados da Simulação</h2>
+      
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <StatCard 
           title="Valor Final Bruto" 
@@ -64,7 +65,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
           title="Total Investido" 
           value={formatCurrency(result.totalInvested)} 
           color="text-green-500"
-          tooltip="Soma do valor inicial com todos os aportes mensais."
+          tooltip="Soma do valor inicial com todos os aportes mensais e extras."
         />
         <StatCard 
           title="Total em Juros" 
